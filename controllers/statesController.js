@@ -31,7 +31,7 @@ const getState = async (req, res) => {
     if (mongoState?.funfacts?.length) {
         return res.json({ ...state, funfacts: mongoState.funfacts });
     }
-    res.json(state);
+    res.json({ ...state, funfacts: [] });
 };
 
 const getFunFact = async (req, res) => {
@@ -101,7 +101,7 @@ const patchFunFact = async (req, res) => {
 
     const mongoState = await State.findOne({ stateCode: req.code });
 
-    if (!mongoState?.funfacts?.length) {
+    if (!mongoState || !mongoState.funfacts.length) {
         return res.status(404).json({ message: "No Fun Facts found for ${state.state}`);"});
     }
     if (!mongoState.funfacts[index - 1]) {
@@ -123,7 +123,7 @@ const deleteFunFact = async (req, res) => {
 
     const mongoState = await State.findOne({ stateCode: req.code });
 
-    if (!mongoState?.funfacts?.length) {
+    if (!mongoState || !mongoState.funfacts.length) {
         return res.status(404).json({ message: "No Fun Facts found for ${state.state}`);"})
     }
     if (!mongoState.funfacts[index - 1]) {

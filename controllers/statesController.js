@@ -105,7 +105,7 @@ const patchFunFact = async (req, res) => {
         return res.status(404).json({ message: `No Fun Facts found for ${state.state}` });
     }
     if (!mongoState.funfacts[index - 1]) {
-        return res.status(404).json({ message: 'No Fun Fact found at that index for ${state.state}`);' });
+        return res.status(404).json({ message: `No Fun Fact found at that index for ${state.state}` });
     }
 
     mongoState.funfacts[index - 1] = funfact;

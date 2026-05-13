@@ -1,17 +1,23 @@
 const stateData = require('../models/statesData.json');
 const State = require('../models/States');
 
+// Get all states
+// return states data
+// merges fun facts from MongoDB
 const getAllStates = async (req, res) => {
     const { contig } = req.query;
     let states = [...stateData];
 
     if (contig === 'true') {
+        // contiguous states Alaska and Hawaii
         states = states.filter(s => s.code !== 'AK' && s.code !== 'HI');
     }
     else if (contig === 'false') {
+        // non contiguous states Alaska and Hawaii
         states = states.filter(s => s.code === 'AK' || s.code === 'HI');
     }
 
+    // fetch fun facts from MongoDB
     const mongoStates = await State.find();
     states = states.map(s => {
         const found = mongoStates.find(m => m.stateCode === s.code);
@@ -25,6 +31,8 @@ const getAllStates = async (req, res) => {
     res.json(states);
 };
 
+// get states/state
+// return state data
 const getState = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     const mongoState = await State.findOne({ stateCode: req.code });
@@ -34,6 +42,8 @@ const getState = async (req, res) => {
     res.json(state);
 };
 
+// get fun facts/state
+// return random fun fact
 const getFunFact = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     const mongoState = await State.findOne({ stateCode: req.code });
@@ -46,26 +56,36 @@ const getFunFact = async (req, res) => {
     res.json({ funfact: randomFact });
 };
 
+// get capital/state
+// return capital city
 const getCapital = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     res.json({ state: state.state, capital: state.capital_city });
 };
 
+// get nickname/state
+// return nickname
 const getNickname = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     res.json({ state: state.state, nickname: state.nickname });
 };
 
+// get population/state
+// return population
 const getPopulation = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     res.json({ state: state.state, population: state.population.toLocaleString('en-US') });
 };
 
+// get admission/state
+// return admission date
 const getAdmission = async (req, res) => {
     const state = stateData.find(s => s.code === req.code);
     res.json({ state: state.state, admitted: state.admission_date });
 };
 
+// post fun facts/state
+// add fun fact to MongoDB
 const postFunFact = async (req, res) => {
     const { funfacts } = req.body;
 
@@ -88,6 +108,8 @@ const postFunFact = async (req, res) => {
     res.status(201).json(result);
 };
 
+// patch fun facts/state
+// update fun fact in MongoDB
 const patchFunFact = async (req, res) => {
     const { index, funfact } = req.body;
     const state = stateData.find(s => s.code === req.code);
@@ -113,6 +135,8 @@ const patchFunFact = async (req, res) => {
     res.json(result);
 };
 
+// delete fun facts/state
+// delete fun fact from MongoDB
 const deleteFunFact = async (req, res) => {
     const { index } = req.body;
     const state = stateData.find(s => s.code === req.code);
